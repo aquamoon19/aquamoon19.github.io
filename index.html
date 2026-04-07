@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AQUAMOON — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0f;
+    --bg2: #0d0e14;
+    --panel: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --accent: #7c6af7;
+    --accent2: #00d4ff;
+    --accent3: #ff6b9d;
+    --green: #3ba55c;
+    --text: #e0e2f0;
+    --muted: #72747d;
+    --glow: 0 0 20px rgba(124,106,247,0.4);
+    --glow2: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(124,106,247,0.5);
+    transform: translate(-50%, -50%);
+  }
+  #cursor-trail {
+    width: 28px; height: 28px;
+    border: 1.5px solid rgba(124,106,247,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: left 0.12s ease, top 0.12s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* PARTICLE CANVAS */
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* SCAN LINES */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 1;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: relative; z-index: 2;
+  }
+
+  /* BANNER */
+.banner {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* GIF Background */
+.banner-gif {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Grid Overlay (optional, keep/remove as you like) */
+.banner-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(400px) rotateX(15deg) translateY(0); }
+  100% { transform: perspective(400px) rotateX(15deg) translateY(40px); }
+}
+
+/* Text */
+.banner-text {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(10px, 2vw, 14px);
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 2;
+
+  /* Neon glow */
+  text-shadow:
+    0 0 5px rgba(124,106,247,0.6),
+    0 0 10px rgba(0,212,255,0.4);
+}
+
+  /* PROFILE SECTION */
+  .profile-section {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+  .profile-inner {
+    position: relative;
+    padding: 0 24px 0 24px;
+  }
+  .avatar-wrap {
+    position: absolute;
+    top: -55px; left: 24px;
+  }
+  .avatar-ring {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent), var(--accent2), var(--accent3), var(--accent));
+    padding: 3px;
+    animation: ringRotate 4s linear infinite;
+    box-shadow: 0 0 30px rgba(124,106,247,0.5);
+  }
+  @keyframes ringRotate {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .avatar-img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e1f2e, #2d1b4e);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--accent);
+    overflow: hidden;
+    border: 3px solid var(--bg2);
+  }
+  .avatar-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .status-dot {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    width: 20px; height: 20px;
+    background: var(--green);
+    border-radius: 50%;
+    border: 3px solid var(--bg2);
+    box-shadow: 0 0 8px rgba(59,165,92,0.8);
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+  @keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(59,165,92,0.8); }
+    50% { box-shadow: 0 0 16px rgba(59,165,92,1), 0 0 24px rgba(59,165,92,0.4); }
+  }
+
+  .profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 14px;
+    gap: 10px;
+  }
+  .btn {
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 12px rgba(124,106,247,0.4);
+  }
+  .btn-primary:hover { background: #9585f8; box-shadow: 0 0 20px rgba(124,106,247,0.7); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+  .profile-info {
+    margin-top: 65px;
+    padding: 0 2px;
+  }
+  .display-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: 1px;
+  }
+  .username {
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 2px;
+  }
+  .pronoun-tag {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 2px 10px;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .status-indicator {
+    width: 10px; height: 10px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(59,165,92,0.8);
+    animation: statusPulse 2s infinite;
+  }
+  .status-text { color: var(--text); font-size: 13px; }
+
+  .description {
+    margin-top: 12px;
+    color: rgba(224,226,240,0.75);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 600px;
+    font-weight: 300;
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+  }
+
+  /* BADGES */
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    transition: all 0.2s;
+  }
+  .badge:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-1px); }
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    padding: 20px 0 120px;
+  }
+  @media (max-width: 720px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .profile-inner { padding: 0 16px; }
+    .avatar-wrap { left: 16px; }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { border-color: rgba(124,106,247,0.3); box-shadow: 0 0 20px rgba(124,106,247,0.08); }
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ABOUT / DESCRIPTION CARD */
+  .about-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(224,226,240,0.85);
+    font-weight: 300;
+  }
+  .about-text .highlight {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  /* HOBBIES */
+  .hobbies-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 480px) { .hobbies-grid { grid-template-columns: repeat(2,1fr); } }
+  .hobby-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: default;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .hobby-item::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, var(--hc) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .hobby-item:hover::before { opacity: 0.08; }
+  .hobby-item:hover { border-color: var(--hc); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  .hobby-icon { font-size: 26px; margin-bottom: 6px; }
+  .hobby-name { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+  /* WORKS */
+  .project-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover::before { opacity: 1; }
+  .project-card:hover { border-color: rgba(124,106,247,0.4); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .project-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .project-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    background: rgba(59,165,92,0.2);
+    border: 1px solid rgba(59,165,92,0.4);
+    color: var(--green);
+    border-radius: 20px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .project-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .project-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    background: rgba(124,106,247,0.1);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 4px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* SOCIAL LINKS */
+  .socials-grid {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .social-link:hover { transform: translateX(4px); border-color: var(--sc); color: var(--sc); }
+  .social-link:hover .social-icon { box-shadow: 0 0 12px var(--sc); }
+  .social-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--sc);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    transition: box-shadow 0.2s;
+  }
+  .social-username { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .social-chevron { margin-left: auto; color: var(--muted); font-size: 12px; }
+
+  /* MINI GAMES */
+  .games-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) { .games-grid { grid-template-columns: 1fr; } }
+  .game-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .game-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .game-icon { font-size: 28px; margin-bottom: 8px; }
+  .game-name { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text); letter-spacing: 1px; }
+  .game-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* GAME MODALS */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #13141e;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 440px;
+    width: 90%;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+  }
+  .modal-overlay.active .modal { transform: scale(1); }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; color: var(--muted);
+    font-size: 20px; cursor: pointer; transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--accent3); }
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px; font-weight: 700;
+    color: white; margin-bottom: 16px;
+  }
+
+  /* SNAKE GAME */
+  #snakeCanvas {
+    background: #0a0b10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: block; margin: 0 auto;
+    image-rendering: pixelated;
+  }
+  .game-controls {
+    display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .game-score {
+    text-align: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--accent2);
+    margin: 8px 0;
+  }
+  .d-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 36px);
+    grid-template-rows: repeat(3, 36px);
+    gap: 4px;
+    margin: 10px auto 0;
+    width: fit-content;
+  }
+  .d-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text); font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s;
+    user-select: none;
+  }
+  .d-btn:active { background: var(--accent); transform: scale(0.9); }
+
+  /* MEMORY GAME */
+  .memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .mem-card {
+    aspect-ratio: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+    transform-style: preserve-3d;
+    position: relative;
+  }
+  .mem-card.flipped { background: rgba(124,106,247,0.15); border-color: var(--accent); }
+  .mem-card.matched { background: rgba(59,165,92,0.15); border-color: var(--green); cursor: default; }
+
+  /* CLICK GAME */
+  #clickTarget {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, var(--accent2) 100%);
+    border: none; cursor: pointer;
+    margin: 16px auto; display: block;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; color: white;
+    box-shadow: var(--glow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    animation: floatTarget 2s ease-in-out infinite;
+  }
+  @keyframes floatTarget {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.03); }
+  }
+  #clickTarget:active { transform: scale(0.9); }
+
+  /* SIDEBAR CARDS */
+  .member-since {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+  }
+  .member-icon {
+    width: 36px; height: 36px;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.3);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  /* ACTIVITY */
+  .activity-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 4px; flex-shrink: 0;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px; font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'Space Mono', monospace; }
+
+  /* MUSIC PLAYER */
+  .music-player {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(13,14,20,0.95);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .music-thumb {
+    width: 42px; height: 42px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    animation: musicThumbSpin 8s linear infinite paused;
+  }
+  .music-thumb.playing { animation-play-state: running; }
+  @keyframes musicThumbSpin {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .music-info { flex: 1; min-width: 0; }
+  .music-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: white;
+  }
+  .music-artist { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 1px; }
+  .music-progress-wrap {
+    flex: 2;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .music-progress-bar {
+    width: 100%; height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px; cursor: pointer; position: relative;
+  }
+  .music-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.5s linear;
+  }
+  .music-times {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace;
+  }
+  .music-controls {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .music-btn {
+    background: none; border: none; color: var(--muted);
+    font-size: 18px; cursor: pointer; transition: color 0.2s, transform 0.1s;
+    padding: 4px;
+  }
+  .music-btn:hover { color: var(--accent); transform: scale(1.15); }
+  .music-play-btn {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: white; font-size: 16px;
+    box-shadow: 0 0 12px rgba(124,106,247,0.5);
+    transition: all 0.2s;
+  }
+  .music-play-btn:hover { background: #9585f8; box-shadow: 0 0 20px rgba(124,106,247,0.8); transform: scale(1.05); }
+  .music-vol {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  }
+  .vol-slider {
+    -webkit-appearance: none;
+    width: 70px; height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px; outline: none; cursor: pointer;
+  }
+  .vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  @media (max-width: 600px) {
+    .music-progress-wrap { display: none; }
+    .music-vol { display: none; }
+    .music-title { font-size: 11px; }
+  }
+
+  /* TYPING EFFECT */
+  .typing-cursor { animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* GLOW TEXT */
+  .glow-text {
+    text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(124,106,247,0.5);
+  }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%);
+    background: #1a1b25;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-family: 'Space Mono', monospace;
+    z-index: 10;
+  }
+  [data-tip]:hover::after { opacity: 1; }
+
+  /* WAVEFORM */
+  .waveform {
+    display: flex; align-items: center; gap: 2px;
+    height: 20px;
+  }
+  .wave-bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: wave 1s ease-in-out infinite;
+  }
+  .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+  .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+  .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+  .wave-bar:nth-child(5) { animation-delay: 0.2s; }
+  @keyframes wave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+  }
+  .waveform.paused .wave-bar { animation-play-state: paused; height: 4px; }
+
+  /* EASTER EGG */
+  .konami-flash {
+    position: fixed; inset: 0;
+    background: var(--accent);
+    opacity: 0; z-index: 9000;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  /* NO SELECT on game elements */
+  canvas { user-select: none; }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<canvas id="particles"></canvas>
+<div class="konami-flash" id="konamiFlash"></div>
+
+<!-- BANNER -->
+<div class="banner">
+  <img src="https://64.media.tumblr.com/c502ff3fc1a8343c768692291dc70c98/87e761e31167ec57-5a/s640x960/0256c77815b596ba13cae4a2fdeeb39e7cdb52af.gifv" class="banner-gif">
+  <div class="banner-grid"></div>
+  <div class="banner-text">// AQUAMOON.EXE - INITIALIZING...</div>
+</div>
+
+<!-- PROFILE SECTION -->
+<div class="profile-section">
+  <div class="container">
+    <div class="profile-inner">
+      <div class="avatar-wrap">
+        <div class="avatar-ring">
+          <div class="avatar-img" id="avatarEl">
+            <!-- Replace src below with your actual photo URL, or keep initials -->
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH4-DrnSXmFJMYYsErq3WSbhGMyZfdsIeVaA&s" alt="Profile Photo">
+          </div>
+        </div>
+        <div class="status-dot" data-tip="Online"></div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-outline" onclick="document.getElementById('worksSection').scrollIntoView({behavior:'smooth'})">View Works</button>
+        <button class="btn btn-primary" onclick="document.getElementById('socialsSection').scrollIntoView({behavior:'smooth'})">Connect →</button>
+      </div>
+      <div class="profile-info">
+        <div class="display-name" id="nameTyped"></div>
+        <div class="username">@aquamoon19</div>
+        <span class="pronoun-tag">se / xie</span>
+        <div class="status-bar">
+          <div class="status-indicator"></div>
+          <span class="status-text">Online — Always ✦</span>
+          <div class="waveform" id="waveform">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+        </div>
+        <div class="description">
+          A biscuit that falls in chai and a human who falls in love can never be their original self again
+        </div>
+        <div class="badges" style="margin-top: 14px;">
+          <div class="badge" data-tip="Bot Developer"><div class="badge-dot" style="background:#7c6af7"></div>Bot Developer</div>
+          <div class="badge" data-tip="Creative"><div class="badge-dot" style="background:#ff6b9d"></div>Creative</div>
+          <div class="badge" data-tip="Artist"><div class="badge-dot" style="background:#00d4ff"></div>Artist</div>
+          <div class="badge" data-tip="Gamer"><div class="badge-dot" style="background:#3ba55c"></div>Gamer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="main-grid">
+
+    <!-- LEFT COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- ABOUT -->
+      <div class="card reveal">
+        <div class="card-title">✦ About Me</div>
+        <p class="about-text">
+          Hey there! I'm a <span class="highlight">self-taught developer</span> and artist who loves building things that feel alive. I created <span class="highlight">Neeli</span>, a multi-purpose Discord bot, and I'm always working on new projects that blend tech with creativity.<br><br>
+          I believe the best interfaces feel like they have a <span class="highlight">heartbeat</span> — and that's what I try to build. Currently: <span class="highlight">leveling up, one commit at a time.</span>
+        </p>
+      </div>
+
+      <!-- HOBBIES -->
+      <div class="card reveal">
+        <div class="card-title">🎮 Hobbies</div>
+        <div class="hobbies-grid">
+          <div class="hobby-item" style="--hc:#7c6af7">
+            <div class="hobby-icon">🎮</div>
+            <div class="hobby-name">Gaming</div>
+          </div>
+          <div class="hobby-item" style="--hc:#ff6b9d">
+            <div class="hobby-icon">✏️</div>
+            <div class="hobby-name">Drawing</div>
+          </div>
+          <div class="hobby-item" style="--hc:#f0b429">
+            <div class="hobby-icon">🎨</div>
+            <div class="hobby-name">Painting</div>
+          </div>
+          <div class="hobby-item" style="--hc:#00d4ff">
+            <div class="hobby-icon">✍️</div>
+            <div class="hobby-name">Writing</div>
+          </div>
+          <div class="hobby-item" style="--hc:#f05050">
+            <div class="hobby-icon">🎬</div>
+            <div class="hobby-name">Movies</div>
+          </div>
+          <div class="hobby-item" style="--hc:#3ba55c">
+            <div class="hobby-icon">🎵</div>
+            <div class="hobby-name">Music</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKS -->
+      <div class="card reveal" id="worksSection">
+        <div class="card-title">🚀 Works</div>
+        <div class="project-card">
+          <div class="project-name">
+            <span>⚡ Neeli</span>
+            <span class="project-badge">Active</span>
+          </div>
+          <div class="project-desc">
+            A powerful multi-purpose Discord bot — moderation, music, fun commands, and more. Built with love and too many late nights.
+          </div>
+          <div class="project-tags">
+            <span class="tag">Discord.js</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Bot</span>
+            <span class="tag">Open Source</span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 14px;" onclick="alert('Link your Neeli bot invite here!')">Invite Bot</button>
+            <button class="btn btn-outline" style="font-size:12px;padding:6px 14px;" onclick="alert('Link your GitHub repo here!')">GitHub →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MINI GAMES -->
+      <div class="card reveal">
+        <div class="card-title">🎲 Mini Games</div>
+        <div class="games-grid">
+          <div class="game-card" onclick="openGame('snake')">
+            <div class="game-icon">🐍</div>
+            <div class="game-name">Snake</div>
+            <div class="game-desc">Classic!</div>
+          </div>
+          <div class="game-card" onclick="openGame('memory')">
+            <div class="game-icon">🧠</div>
+            <div class="game-name">Memory</div>
+            <div class="game-desc">Flip & match</div>
+          </div>
+          <div class="game-card" onclick="openGame('click')">
+            <div class="game-icon">🎯</div>
+            <div class="game-name">Click Frenzy</div>
+            <div class="game-desc">How fast?</div>
+          </div>
+          <div class="game-card" onclick="openGame('rps')">
+            <div class="game-icon">✌️</div>
+            <div class="game-name">Rock Paper Scissors</div>
+            <div class="game-desc">vs CPU</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (SIDEBAR) -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- STATS -->
+      <div class="card reveal">
+        <div class="card-title">📊 Stats</div>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-num" id="statProjects">0</div>
+            <div class="stat-label">Projects</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="statCommits">0</div>
+            <div class="stat-label">Commits</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="statCoffee">0</div>
+            <div class="stat-label">Coffees</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBER SINCE -->
+      <div class="card reveal">
+        <div class="card-title">🗓 Info</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="member-since">
+            <div class="member-icon">📅</div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">MEMBER SINCE</div>
+              <div style="font-size:14px;font-weight:600;">Jan 2020</div>
+            </div>
+          </div>
+          <div class="member-since">
+            <div class="member-icon">📍</div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">LOCATION</div>
+              <div style="font-size:14px;font-weight:600;">India 🇮🇳</div>
+            </div>
+          </div>
+          <div class="member-since">
+            <div class="member-icon">💬</div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">LANGUAGES</div>
+              <div style="font-size:14px;font-weight:600;">JS · Python · HTML</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOCIAL LINKS -->
+      <div class="card reveal" id="socialsSection">
+        <div class="card-title">🔗 Socials</div>
+        <div class="socials-grid">
+          <a class="social-link" href="https://discord.com/users/7289325154419183687" style="--sc:#7289DA">
+            <div class="social-icon" style="background:#7289DA">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.014.043.031.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            </div>
+            <div>
+              <div>Discord</div>
+              <div class="social-username">aquamoon19</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://www.instagram.com/aquamoon19?igsh=MXZ6Y25oeWt4bWhodA==" style="--sc:#E1306C">
+            <div class="social-icon" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </div>
+            <div>
+              <div>Instagram</div>
+              <div class="social-username">aquamoon19</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://github.com/aquamoon19" style="--sc:#fff">
+            <div class="social-icon" style="background:#1a1b20;border:1px solid rgba(255,255,255,0.15)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </div>
+            <div>
+              <div>GitHub</div>
+              <div class="social-username">aquamoon19</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://steamcommunity.com/id/re19aquamoon/" style="--sc:#1b2838">
+            <div class="social-icon" style="background:#1b2838">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.497 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>
+            </div>
+            <div>
+              <div>Steam</div>
+              <div class="social-username">AQUAMOON19</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://www.reddit.com/u/HornyExistentialist/s/LwmI2HzgMx" style="--sc:#FF4500">
+            <div class="social-icon" style="background:#FF4500">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+            </div>
+            <div>
+              <div>Reddit</div>
+              <div class="social-username">u/HornyExistentialist</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://www.roblox.com/users/8413045168/profile" style="--sc:#00A2FF">
+            <div class="social-icon" style="background:#00A2FF">
+              🟦
+            </div>
+            <div>
+              <div>Roblox</div>
+              <div class="social-username">HopelessRomantic069</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+          <a class="social-link" href="https://open.spotify.com/user/31v2dvvzxspdcsf6nnmohxla" style="--sc:#1DB954">
+            <div class="social-icon" style="background:#1DB954">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            </div>
+            <div>
+              <div>Spotify</div>
+              <div class="social-username">aquamoon19</div>
+            </div>
+            <div class="social-chevron">›</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="card reveal">
+        <div class="card-title">📡 Activity</div>
+        <div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent)"></div>
+            <div>
+              <div style="font-size:13px;">Pushed to <b>Neeli</b></div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">2 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent2)"></div>
+            <div>
+              <div style="font-size:13px;">Starred <b>discord.js</b></div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">1 day ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent3)"></div>
+            <div>
+              <div style="font-size:13px;">Opened new issue</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">3 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div class="music-player" id="musicPlayer">
+  <div class="music-thumb" id="musicThumb">🎵</div>
+  <div class="music-info">
+    <div class="music-title" id="musicTitle">A Man Without Love</div>
+    <div class="music-artist" id="musicArtist">Engelbert Humperdinck</div>
+  </div>
+  <div class="music-progress-wrap">
+    <div class="music-progress-bar" id="progressBar" onclick="seekMusic(event)">
+      <div class="music-progress-fill" id="progressFill"></div>
+    </div>
+    <div class="music-times">
+      <span id="timeCurrent">0:00</span>
+      <span id="timeDuration">0:00</span>
+    </div>
+  </div>
+  <div class="music-controls">
+    <button class="music-btn" onclick="restartMusic()" title="Restart">⟨⟨</button>
+    <button class="music-play-btn" id="playBtn" onclick="toggleMusic()">▶</button>
+    <button class="music-btn" onclick="toggleMute()" id="muteBtn" title="Mute">🔊</button>
+  </div>
+  <div class="music-vol">
+    <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.01" value="0.6" oninput="setVolume(this.value)">
+  </div>
+</div>
+
+<!-- =================== GAME MODALS =================== -->
+
+<!-- SNAKE -->
+<div class="modal-overlay" id="snakeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGame('snake')">✕</button>
+    <div class="modal-title">🐍 Snake</div>
+    <div class="game-score">Score: <span id="snakeScore">0</span> | Best: <span id="snakeBest">0</span></div>
+    <canvas id="snakeCanvas" width="280" height="280"></canvas>
+    <div class="d-pad">
+      <div></div>
+      <button class="d-btn" onclick="setSnakeDir(0,-1)">▲</button>
+      <div></div>
+      <button class="d-btn" onclick="setSnakeDir(-1,0)">◄</button>
+      <div></div>
+      <button class="d-btn" onclick="setSnakeDir(1,0)">►</button>
+      <div></div>
+      <button class="d-btn" onclick="setSnakeDir(0,1)">▼</button>
+      <div></div>
+    </div>
+    <div style="text-align:center;margin-top:10px;">
+      <button class="btn btn-primary" onclick="startSnake()" style="font-size:13px;">Start / Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMORY -->
+<div class="modal-overlay" id="memoryModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGame('memory')">✕</button>
+    <div class="modal-title">🧠 Memory Match</div>
+    <div class="game-score">Moves: <span id="memMoves">0</span> | Pairs: <span id="memPairs">0</span>/8</div>
+    <div class="memory-grid" id="memGrid"></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-primary" onclick="initMemory()" style="font-size:13px;">New Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLICK FRENZY -->
+<div class="modal-overlay" id="clickModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGame('click')">✕</button>
+    <div class="modal-title">🎯 Click Frenzy</div>
+    <div class="game-score">Score: <span id="clickScore">0</span> | Time: <span id="clickTime">10</span>s</div>
+    <button id="clickTarget" onclick="clickFrenzy()">CLICK!</button>
+    <div style="text-align:center;margin-top:4px;">
+      <button class="btn btn-primary" onclick="startClick()" style="font-size:13px;">Start</button>
+    </div>
+  </div>
+</div>
+
+<!-- RPS -->
+<div class="modal-overlay" id="rpsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGame('rps')">✕</button>
+    <div class="modal-title">✌️ Rock Paper Scissors</div>
+    <div class="game-score">You: <span id="rpsWins">0</span> | CPU: <span id="rpsLosses">0</span> | Ties: <span id="rpsTies">0</span></div>
+    <div style="text-align:center;margin:16px 0;">
+      <div id="rpsResult" style="font-size:14px;color:var(--muted);font-family:'Space Mono',monospace;min-height:20px;"></div>
+      <div style="display:flex;justify-content:center;gap:10px;margin-top:12px;">
+        <div style="text-align:center;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">YOU</div>
+          <div id="rpsYouIcon" style="font-size:40px;min-height:50px;">❓</div>
+        </div>
+        <div style="display:flex;align-items:center;font-size:20px;color:var(--muted);">VS</div>
+        <div style="text-align:center;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">CPU</div>
+          <div id="rpsCpuIcon" style="font-size:40px;min-height:50px;">❓</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:10px;">
+      <button class="btn btn-outline" style="font-size:20px;padding:10px 16px;" onclick="playRPS('rock')">🪨</button>
+      <button class="btn btn-outline" style="font-size:20px;padding:10px 16px;" onclick="playRPS('paper')">📄</button>
+      <button class="btn btn-outline" style="font-size:20px;padding:10px 16px;" onclick="playRPS('scissors')">✂️</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIO ELEMENT -->
+<!-- 
+  TO ADD YOUR MUSIC:
+  Replace the src below with your audio file path.
+  Example: <source src="music/your-song.mp3" type="audio/mpeg">
+  Or use a direct URL.
+-->
+<audio id="bgMusic" loop preload="auto">
+  <source src="https://audio.jukehost.co.uk/h4IBH6XRkDIWTvtUp8VoadeFnYmzCpZY" type="audio/mpeg">
+</audio>
+
+<script>
+// ============================================================
+// CURSOR
+// ============================================================
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    trail.style.left = e.clientX + 'px';
+    trail.style.top = e.clientY + 'px';
+  }, 80);
+});
+document.querySelectorAll('a,button,.game-card,.hobby-item,.social-link').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%,-50%) scale(2)');
+  el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%,-50%) scale(1)');
+});
+
+// ============================================================
+// PARTICLES
+// ============================================================
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.size = Math.random() * 1.5 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.alpha = Math.random() * 0.4 + 0.1;
+    this.color = ['#7c6af7','#00d4ff','#ff6b9d'][Math.floor(Math.random()*3)];
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if(this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+  }
+}
+for(let i=0;i<120;i++) particles.push(new Particle());
+function animParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+// ============================================================
+// TYPING EFFECT
+// ============================================================
+const nameEl = document.getElementById('nameTyped');
+const nameStr = 'AQUAMOON';  // ← CHANGE THIS
+let ni = 0;
+function typeName() {
+  if(ni < nameStr.length) {
+    nameEl.innerHTML = nameStr.slice(0, ++ni) + '<span class="typing-cursor">|</span>';
+    setTimeout(typeName, 100);
+  } else {
+    nameEl.innerHTML = nameStr;
+  }
+}
+setTimeout(typeName, 500);
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if(e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+
+// ============================================================
+// STATS COUNTER
+// ============================================================
+function countUp(id, target, duration=1500) {
+  const el = document.getElementById(id);
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if(start >= target) { el.textContent = target; clearInterval(timer); }
+    else el.textContent = Math.floor(start);
+  }, 16);
+}
+setTimeout(() => {
+  countUp('statProjects', 5);
+  countUp('statCommits', 342);
+  countUp('statCoffee', 99);
+}, 800);
+
+// ============================================================
+// MUSIC PLAYER
+// ============================================================
+const audio = document.getElementById('bgMusic');
+const playBtn = document.getElementById('playBtn');
+const progressFill = document.getElementById('progressFill');
+const timeCurrent = document.getElementById('timeCurrent');
+const timeDuration = document.getElementById('timeDuration');
+const musicThumb = document.getElementById('musicThumb');
+const waveform = document.getElementById('waveform');
+let muted = false;
+
+// AUTO PLAY on first interaction
+let autoPlayed = false;
+document.addEventListener('click', () => {
+  if(!autoPlayed) { 
+    audio.volume = 0.6; 
+    audio.play().catch(()=>{});
+    autoPlayed = true;
+    playBtn.textContent = '⏸';
+    musicThumb.classList.add('playing');
+    waveform.classList.remove('paused');
+  }
+}, { once: true });
+
+function toggleMusic() {
+  if(audio.paused) {
+    audio.play(); 
+    playBtn.textContent = '⏸';
+    musicThumb.classList.add('playing');
+    waveform.classList.remove('paused');
+  } else {
+    audio.pause(); 
+    playBtn.textContent = '▶';
+    musicThumb.classList.remove('playing');
+    waveform.classList.add('paused');
+  }
+}
+function restartMusic() {
+  audio.currentTime = 0;
+  audio.play();
+  playBtn.textContent = '⏸';
+  musicThumb.classList.add('playing');
+  waveform.classList.remove('paused');
+}
+function toggleMute() {
+  muted = !muted;
+  audio.muted = muted;
+  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
+}
+function setVolume(v) { audio.volume = v; }
+function formatTime(s) {
+  const m = Math.floor(s/60);
+  return m + ':' + String(Math.floor(s%60)).padStart(2,'0');
+}
+audio.addEventListener('timeupdate', () => {
+  if(!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  progressFill.style.width = pct + '%';
+  timeCurrent.textContent = formatTime(audio.currentTime);
+  timeDuration.textContent = formatTime(audio.duration);
+});
+function seekMusic(e) {
+  if(!audio.duration) return;
+  const bar = document.getElementById('progressBar');
+  const rect = bar.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+}
+
+// Set your music info here:
+document.getElementById('musicTitle').textContent = 'A Man Without Love';
+document.getElementById('musicArtist').textContent = 'Engelbert Humperdinck';
+
+// ============================================================
+// GAME SYSTEM
+// ============================================================
+function openGame(id) { document.getElementById(id+'Modal').classList.add('active'); }
+function closeGame(id) { document.getElementById(id+'Modal').classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('active'); });
+});
+
+// ------ SNAKE ------
+let snakeGame, snakeInterval, snakeDir, snakeNextDir, snakeScore, snakeBest = 0;
+const COLS = 14, ROWS = 14, CELL = 20;
+function startSnake() {
+  clearInterval(snakeInterval);
+  snakeScore = 0;
+  document.getElementById('snakeScore').textContent = 0;
+  snakeDir = {x:1, y:0}; snakeNextDir = {x:1, y:0};
+  snakeGame = {
+    snake: [{x:7,y:7},{x:6,y:7},{x:5,y:7}],
+    food: spawnFood([{x:7,y:7}]),
+    alive: true
+  };
+  snakeInterval = setInterval(snakeTick, 150);
+}
+function spawnFood(snake) {
+  let f;
+  do { f = {x:Math.floor(Math.random()*COLS), y:Math.floor(Math.random()*ROWS)}; }
+  while(snake.some(s=>s.x===f.x&&s.y===f.y));
+  return f;
+}
+function setSnakeDir(x, y) {
+  if(x===1&&snakeDir.x===-1||x===-1&&snakeDir.x===1) return;
+  if(y===1&&snakeDir.y===-1||y===-1&&snakeDir.y===1) return;
+  snakeNextDir = {x, y};
+}
+function snakeTick() {
+  const g = snakeGame;
+  snakeDir = {...snakeNextDir};
+  const head = {x: g.snake[0].x + snakeDir.x, y: g.snake[0].y + snakeDir.y};
+  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||g.snake.some(s=>s.x===head.x&&s.y===head.y)) {
+    clearInterval(snakeInterval);
+    drawSnake(true);
+    return;
+  }
+  g.snake.unshift(head);
+  if(head.x===g.food.x&&head.y===g.food.y) {
+    snakeScore++;
+    document.getElementById('snakeScore').textContent = snakeScore;
+    if(snakeScore > snakeBest) { snakeBest = snakeScore; document.getElementById('snakeBest').textContent = snakeBest; }
+    g.food = spawnFood(g.snake);
+  } else g.snake.pop();
+  drawSnake(false);
+}
+function drawSnake(dead) {
+  const c = document.getElementById('snakeCanvas');
+  const cx = c.getContext('2d');
+  cx.fillStyle = '#0a0b10'; cx.fillRect(0,0,c.width,c.height);
+  const g = snakeGame;
+  // Grid
+  cx.strokeStyle = 'rgba(255,255,255,0.03)';
+  for(let i=0;i<=COLS;i++){cx.beginPath();cx.moveTo(i*CELL,0);cx.lineTo(i*CELL,ROWS*CELL);cx.stroke();}
+  for(let j=0;j<=ROWS;j++){cx.beginPath();cx.moveTo(0,j*CELL);cx.lineTo(COLS*CELL,j*CELL);cx.stroke();}
+  // Food
+  cx.fillStyle = '#ff6b9d';
+  cx.shadowColor = '#ff6b9d'; cx.shadowBlur = 10;
+  cx.beginPath(); cx.arc(g.food.x*CELL+CELL/2, g.food.y*CELL+CELL/2, CELL/2-2, 0, Math.PI*2); cx.fill();
+  cx.shadowBlur = 0;
+  // Snake
+  g.snake.forEach((s,i) => {
+    const alpha = dead ? 0.4 : 1;
+    cx.fillStyle = i===0 ? `rgba(124,106,247,${alpha})` : `rgba(0,212,255,${alpha * (0.4 + 0.6*(1-i/g.snake.length))})`;
+    cx.shadowColor = i===0?'#7c6af7':'#00d4ff'; cx.shadowBlur = i===0?8:4;
+    const pad = i===0?1:2;
+    cx.beginPath(); cx.roundRect(s.x*CELL+pad, s.y*CELL+pad, CELL-pad*2, CELL-pad*2, 3); cx.fill();
+  });
+  cx.shadowBlur = 0;
+  if(dead) {
+    cx.fillStyle = 'rgba(0,0,0,0.6)'; cx.fillRect(0,0,c.width,c.height);
+    cx.fillStyle = '#ff6b9d'; cx.font = 'bold 14px Orbitron,monospace';
+    cx.textAlign = 'center'; cx.fillText('GAME OVER', c.width/2, c.height/2-10);
+    cx.fillStyle = 'rgba(255,255,255,0.6)'; cx.font = '11px Space Mono,monospace';
+    cx.fillText('Score: '+snakeScore, c.width/2, c.height/2+12);
+  }
+}
+// Keyboard for snake
+document.addEventListener('keydown', e => {
+  const map = {'ArrowUp':{x:0,y:-1},'ArrowDown':{x:0,y:1},'ArrowLeft':{x:-1,y:0},'ArrowRight':{x:1,y:0},
+                'w':{x:0,y:-1},'s':{x:0,y:1},'a':{x:-1,y:0},'d':{x:1,y:0}};
+  if(map[e.key] && document.getElementById('snakeModal').classList.contains('active')) {
+    e.preventDefault();
+    setSnakeDir(map[e.key].x, map[e.key].y);
+  }
+});
+// Initial draw
+setTimeout(() => { if(document.getElementById('snakeCanvas')) drawSnake(false); }, 100);
+
+// ------ MEMORY ------
+const memEmojis = ['🎮','🎵','🎨','✏️','🎬','🌙','⚡','🔮'];
+let memCards = [], memFlipped = [], memMatched = 0, memMoves = 0, memLock = false;
+function initMemory() {
+  memMatched = 0; memMoves = 0; memFlipped = []; memLock = false;
+  document.getElementById('memMoves').textContent = 0;
+  document.getElementById('memPairs').textContent = 0;
+  const pairs = [...memEmojis, ...memEmojis].sort(() => Math.random()-0.5);
+  const grid = document.getElementById('memGrid');
+  grid.innerHTML = '';
+  memCards = pairs.map((emoji, i) => {
+    const el = document.createElement('div');
+    el.className = 'mem-card';
+    el.dataset.i = i; el.dataset.emoji = emoji;
+    el.textContent = '';
+    el.addEventListener('click', () => flipCard(el));
+    grid.appendChild(el);
+    return el;
+  });
+}
+function flipCard(el) {
+  if(memLock || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  el.textContent = el.dataset.emoji;
+  memFlipped.push(el);
+  if(memFlipped.length === 2) {
+    memLock = true; memMoves++;
+    document.getElementById('memMoves').textContent = memMoves;
+    const [a, b] = memFlipped;
+    if(a.dataset.emoji === b.dataset.emoji) {
+      a.classList.add('matched'); b.classList.add('matched');
+      memMatched++; memFlipped = []; memLock = false;
+      document.getElementById('memPairs').textContent = memMatched;
+      if(memMatched === 8) setTimeout(() => alert('🎉 You matched all pairs in '+memMoves+' moves!'), 200);
+    } else {
+      setTimeout(() => {
+        a.classList.remove('flipped'); b.classList.remove('flipped');
+        a.textContent = ''; b.textContent = '';
+        memFlipped = []; memLock = false;
+      }, 900);
+    }
+  }
+}
+setTimeout(initMemory, 200);
+
+// ------ CLICK FRENZY ------
+let clickScore = 0, clickTimer, clickActive = false;
+function startClick() {
+  clickScore = 0; clickActive = true;
+  document.getElementById('clickScore').textContent = 0;
+  let time = 10;
+  document.getElementById('clickTime').textContent = time;
+  clearInterval(clickTimer);
+  clickTimer = setInterval(() => {
+    time--;
+    document.getElementById('clickTime').textContent = time;
+    if(time <= 0) {
+      clearInterval(clickTimer); clickActive = false;
+      document.getElementById('clickTime').textContent = '0';
+      setTimeout(() => alert('⏱ Time\'s up! You clicked '+clickScore+' times!'), 100);
+    }
+  }, 1000);
+}
+function clickFrenzy() {
+  if(!clickActive) return;
+  clickScore++;
+  document.getElementById('clickScore').textContent = clickScore;
+  const btn = document.getElementById('clickTarget');
+  btn.style.transform = 'scale(0.85)';
+  setTimeout(() => btn.style.transform = '', 60);
+}
+
+// ------ RPS ------
+let rpsW = 0, rpsL = 0, rpsT = 0;
+const rpsMap = { rock: '🪨', paper: '📄', scissors: '✂️' };
+const rpsChoices = ['rock','paper','scissors'];
+function playRPS(choice) {
+  const cpu = rpsChoices[Math.floor(Math.random()*3)];
+  document.getElementById('rpsYouIcon').textContent = rpsMap[choice];
+  document.getElementById('rpsCpuIcon').textContent = rpsMap[cpu];
+  let result;
+  if(choice===cpu) { result='Tie! 🤝'; rpsT++; document.getElementById('rpsTies').textContent=rpsT; }
+  else if((choice==='rock'&&cpu==='scissors')||(choice==='paper'&&cpu==='rock')||(choice==='scissors'&&cpu==='paper')) {
+    result='You Win! 🎉'; rpsW++; document.getElementById('rpsWins').textContent=rpsW;
+  } else { result='CPU Wins! 🤖'; rpsL++; document.getElementById('rpsLosses').textContent=rpsL; }
+  const el = document.getElementById('rpsResult');
+  el.textContent = result;
+  el.style.color = result.includes('Win!') ? 'var(--green)' : result.includes('CPU') ? 'var(--accent3)' : 'var(--muted)';
+}
+
+// ============================================================
+// KONAMI CODE EASTER EGG
+// ============================================================
+const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let ki = 0;
+document.addEventListener('keydown', e => {
+  if(e.key === konami[ki]) ki++;
+  else ki = 0;
+  if(ki === konami.length) {
+    ki = 0;
+    const f = document.getElementById('konamiFlash');
+    f.style.opacity = 0.4;
+    setTimeout(() => f.style.opacity = 0, 300);
+    confettiEffect();
+  }
+});
+function confettiEffect() {
+  for(let i=0;i<60;i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed;width:8px;height:8px;border-radius:50%;
+      background:${['#7c6af7','#00d4ff','#ff6b9d','#f0b429','#3ba55c'][Math.floor(Math.random()*5)]};
+      left:${Math.random()*100}vw;top:-10px;z-index:9500;pointer-events:none;
+      animation:confettiFall ${1.5+Math.random()}s ease-in forwards;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+  if(!document.getElementById('confettiStyle')) {
+    const s = document.createElement('style');
+    s.id='confettiStyle';
+    s.textContent=`@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}`;
+    document.head.appendChild(s);
+  }
+}
+
+// ============================================================
+// WAVEFORM PAUSE STATE (sync with music)
+// ============================================================
+audio.addEventListener('pause', () => waveform.classList.add('paused'));
+audio.addEventListener('play', () => waveform.classList.remove('paused'));
+waveform.classList.add('paused'); // start paused
+</script>
+</body>
+</html>
